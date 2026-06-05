@@ -1,10 +1,9 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = "123456"
 
 CORS(app)
 
@@ -74,53 +73,50 @@ crear_bd()
 
 @app.route('/')
 def inicio():
-    return redirect('/login')
+
+    return jsonify({
+        "mensaje": "API funcionando correctamente"
+    })
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+# ==========================
+# LOGIN API
+# ==========================
 
-    if request.method == 'POST':
+@app.route('/api/login', methods=['POST'])
+def api_login():
 
-        usuario = request.form['usuario']
-        password = request.form['password']
+    datos = request.get_json()
 
-        conn = sqlite3.connect("database.db")
-        cursor = conn.cursor()
+    usuario = datos['usuario']
+    password = datos['password']
 
-        cursor.execute(
-            "SELECT * FROM usuarios WHERE username=? AND password=?",
-            (usuario, password)
-        )
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-        dato = cursor.fetchone()
+    cursor.execute(
+        "SELECT * FROM usuarios WHERE username=? AND password=?",
+        (usuario, password)
+    )
 
-        conn.close()
+    usuario_bd = cursor.fetchone()
 
-        if dato:
-            session['usuario'] = usuario
-            return redirect('/principal')
+    conn.close()
 
-    return render_template('login.html')
+    if usuario_bd:
 
+        return jsonify({
+            "success": True
+        })
 
-@app.route('/principal')
-def principal():
-
-    if 'usuario' not in session:
-        return redirect('/login')
-
-    return render_template('principal.html')
+    return jsonify({
+        "success": False
+    })
 
 
-@app.route('/buscador')
-def buscador():
-
-    if 'usuario' not in session:
-        return redirect('/login')
-
-    return render_template('buscador.html')
-
+# ==========================
+# BUSCAR PRODUCTO API
+# ==========================
 
 @app.route('/api/buscar_producto', methods=['POST'])
 def buscar_producto():
@@ -156,16 +152,6 @@ def buscar_producto():
     return jsonify({
         "mensaje": "Producto no encontrado"
     })
-
-
-@app.route('/logout')
-def logout():
-
-    session.clear()
-
-    return redirect('/login')
-
-
 
 
 if __name__ == '__main__':

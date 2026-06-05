@@ -70,31 +70,75 @@
 
 <div class="formulario">
 
-<h1>Ingreso</h1>
+    <h1>Ingreso</h1>
 
-<form method="POST">
+    <label>Usuario</label>
 
-<label>Usuario</label>
+    <input
+    type="text"
+    id="usuario"
+    required>
 
-<input
-type="text"
-name="usuario"
-required>
+    <label>Contraseña</label>
 
-<label>Contraseña</label>
+    <input
+    type="password"
+    id="password"
+    required>
 
-<input
-type="password"
-name="password"
-required>
-
-<button type="submit">
-Entrar
-</button>
-
-</form>
+    <button onclick="login()">
+        Entrar
+    </button>
 
 </div>
+
+<script>
+
+const API =
+"https://parcial-prgiialvarez.onrender.com";
+
+async function login(){
+
+    let usuario =
+    document.getElementById("usuario").value;
+
+    let password =
+    document.getElementById("password").value;
+
+    let respuesta =
+    await fetch(
+        API + "/api/login",
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                usuario:usuario,
+                password:password
+            })
+        }
+    );
+
+    let data =
+    await respuesta.json();
+
+    if(data.success){
+
+        window.location.href =
+        "principal.html";
+
+    }else{
+
+        alert("Usuario o contraseña incorrectos");
+
+    }
+
+}
+
+</script>
 
 </body>
 </html>

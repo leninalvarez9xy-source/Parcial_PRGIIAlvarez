@@ -91,7 +91,7 @@
         Resultado...
     </div>
 
-    <a href="/principal">
+    <a href="principal.html">
         <button>
             Regresar
         </button>
@@ -101,25 +101,31 @@
 
 <script>
 
+const API =
+"https://parcial-prgiialvarez.onrender.com";
+
 async function buscar(){
 
     let codigo =
     document.getElementById("codigo").value;
 
     let respuesta =
-    await fetch("/api/buscar_producto",{
+    await fetch(
+        API + "/api/buscar_producto",
+        {
 
-        method:"POST",
+            method:"POST",
 
-        headers:{
-            "Content-Type":"application/json"
-        },
+            headers:{
+                "Content-Type":"application/json"
+            },
 
-        body:JSON.stringify({
-            codigo:codigo
-        })
+            body:JSON.stringify({
+                codigo:codigo
+            })
 
-    });
+        }
+    );
 
     let data =
     await respuesta.json();
@@ -137,9 +143,7 @@ async function buscar(){
 
         <b>Precio:</b> S/. ${data.precio}<br><br>
 
-        <b>Stock:</b> ${data.stock}<br><br>
-
-        <b>Categoría:</b> ${data.categoria}
+        <b>Stock:</b> ${data.stock}
         `;
 
     }else{
