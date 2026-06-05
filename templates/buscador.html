@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscador</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f4f4f4;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            height:100vh;
+
+            margin:0;
+        }
+
+        .contenedor{
+
+            width:500px;
+
+            background:white;
+
+            padding:30px;
+
+            border:1px solid #ccc;
+
+            text-align:center;
+        }
+
+        h1{
+            margin-bottom:20px;
+        }
+
+        input{
+
+            width:100%;
+
+            padding:10px;
+
+            box-sizing:border-box;
+        }
+
+        button{
+
+            padding:10px 20px;
+
+            margin-top:10px;
+
+            cursor:pointer;
+        }
+
+        #resultado{
+
+            margin-top:20px;
+
+            border:1px solid #ccc;
+
+            padding:15px;
+
+            text-align:left;
+
+            min-height:80px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>Buscar Producto</h1>
+
+    <input
+    type="text"
+    id="codigo"
+    placeholder="Ingrese código del producto">
+
+    <br>
+
+    <button onclick="buscar()">
+        Buscar
+    </button>
+
+    <div id="resultado">
+        Resultado...
+    </div>
+
+    <a href="/principal">
+        <button>
+            Regresar
+        </button>
+    </a>
+
+</div>
+
+<script>
+
+async function buscar(){
+
+    let codigo =
+    document.getElementById("codigo").value;
+
+    let respuesta =
+    await fetch("/api/buscar_producto",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            codigo:codigo
+        })
+
+    });
+
+    let data =
+    await respuesta.json();
+
+    if(data.nombre){
+
+        document.getElementById("resultado").innerHTML =
+
+        `
+        <b>Código:</b> ${data.codigo}<br><br>
+
+        <b>Nombre:</b> ${data.nombre}<br><br>
+
+        <b>Descripción:</b> ${data.descripcion}<br><br>
+
+        <b>Precio:</b> S/. ${data.precio}<br><br>
+
+        <b>Stock:</b> ${data.stock}<br><br>
+
+        <b>Categoría:</b> ${data.categoria}
+        `;
+
+    }else{
+
+        document.getElementById("resultado").innerHTML =
+        data.mensaje;
+    }
+
+}
+
+</script>
+
+</body>
+</html>
