@@ -79,9 +79,7 @@ def inicio():
     })
 
 
-# ==========================
-# LOGIN API
-# ==========================
+
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
